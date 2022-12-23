@@ -626,8 +626,8 @@ def create_from_images3d(tfrecord_dir, image_dir, shuffle, base_size):
 
     channels = img.shape[3] if img.ndim == 4 else 1
 
-    print( img.shape )
-    print( channels )
+    print( img.shape ) # [64, 64, 160, 2]
+    print( channels ) # 2
 
     # if img.shape[1] != resolution:
     #     error('Input images must have the same width and height')
@@ -651,6 +651,12 @@ def create_from_images3d(tfrecord_dir, image_dir, shuffle, base_size):
                 img = img[np.newaxis, :, :, :] # XYZ => CXYZ
             else:
                 img = img.transpose([3, 0, 1, 2]) # XYZC => CXYZ
+            
+            for c_idx in range(channels):
+                # [0, 0.172] and [0, 1] -> [0, 1]
+                img[c_idx] = (
+                    (img[c_idx] - img[c_idx].min()) / (img[c_idx].max() - img[c_idx].min())
+                )
 
             tfr.add_image3d_base(img, base_size)
 
