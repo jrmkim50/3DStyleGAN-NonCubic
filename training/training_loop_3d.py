@@ -420,6 +420,10 @@ def training_loop(
         done = (cur_nimg >= total_kimg * 1000)
 
         if cur_tick < 0 or cur_nimg >= tick_start_nimg + sched.tick_kimg * 1000 or done:
+            print( "=========================================" )
+            print( "Scheduler" )
+            print(sched)
+            print( "=========================================" )
             cur_tick += 1
             tick_kimg = (cur_nimg - tick_start_nimg) / 1000.0
             tick_start_nimg = cur_nimg
