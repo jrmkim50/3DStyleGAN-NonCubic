@@ -217,7 +217,7 @@ class TFRecordExporter:
         if self.shape is None:
             self.shape = img.shape
 
-            assert self.shape[ 0 ] == 1, "Image Channel is not 1"
+            # assert self.shape[ 0 ] == 1, "Image Channel is not 1"
             # assert self.shape[ 1 ] == 160 and self.shape[ 2 ] == 192 and self.shape[ 3 ] == 224, "Error: Image dimension is fixed to 160x192x224"
 
             self.resolution_log2 = int(np.log2( self.shape[1] / base_size[ 0 ] * 4 ) )
