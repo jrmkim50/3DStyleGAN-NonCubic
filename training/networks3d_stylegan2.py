@@ -317,7 +317,7 @@ def G_mapping_3d(
 def G_synthesis_stylegan2_3d_curated_real(
     dlatents_in,                        # Input: Disentangled latents (W) [minibatch, num_layers, dlatent_size].
     dlatent_size        = 96,          # Disentangled latent (W) dimensionality.
-    num_channels        = 1,            # Number of output color channels.
+    num_channels        = 2,            # Number of output color channels.
     resolution          = 128,         # Output resolution. 1024
     fmap_base           = 4 << 10,     # Overall multiplier for the number of feature maps.
     fmap_decay          = 1.0,          # log2 feature map reduction when doubling the resolution.
@@ -451,7 +451,7 @@ def G_synthesis_stylegan2_3d_curated_real(
 def D_stylegan2_3d_curated_real(
     images_in,                          # First input: Images [minibatch, channel, height, width].
     labels_in,                          # Second input: Labels [minibatch, label_size].
-    num_channels        = 1,            # Number of input color channels. Overridden based on dataset.
+    num_channels        = 2,            # Number of input color channels. Overridden based on dataset.
     resolution          = 128,         # Input resolution. Overridden based on dataset.
     label_size          = 0,            # Dimensionality of the labels, 0 if no labels. Overridden based on dataset.
     fmap_base           = 4 << 10,     # Overall multiplier for the number of feature maps.
@@ -555,7 +555,7 @@ def D_stylegan2_3d_curated_real(
 def G_synthesis_stylegan2_3d(
     dlatents_in,                        # Input: Disentangled latents (W) [minibatch, num_layers, dlatent_size].
     dlatent_size        = 128,          # Disentangled latent (W) dimensionality.
-    num_channels        = 1,            # Number of output color channels.
+    num_channels        = 2,            # Number of output color channels.
     resolution          = 128,         # Output resolution. 1024
     fmap_base           = 16 << 10,     # Overall multiplier for the number of feature maps.
     fmap_decay          = 1,          # log2 feature map reduction when doubling the resolution.
@@ -665,7 +665,7 @@ def G_synthesis_stylegan2_3d(
 def D_stylegan2_3d(
     images_in,                          # First input: Images [minibatch, channel, height, width].
     labels_in,                          # Second input: Labels [minibatch, label_size].
-    num_channels        = 1,            # Number of input color channels. Overridden based on dataset.
+    num_channels        = 2,            # Number of input color channels. Overridden based on dataset.
     resolution          = 128,         # Input resolution. Overridden based on dataset.
     label_size          = 0,            # Dimensionality of the labels, 0 if no labels. Overridden based on dataset.
     fmap_base           = 16 << 10,     # Overall multiplier for the number of feature maps.
@@ -755,7 +755,7 @@ def D_stylegan2_3d(
 def G_synthesis_stylegan2_3d_192(
     dlatents_in,                        # Input: Disentangled latents (W) [minibatch, num_layers, dlatent_size].
     dlatent_size        = 128,          # Disentangled latent (W) dimensionality.
-    num_channels        = 1,            # Number of output color channels.
+    num_channels        = 2,            # Number of output color channels.
     resolution          = 128,         # Output resolution. 1024
     fmap_base           = 16 << 10,     # Overall multiplier for the number of feature maps.
     fmap_decay          = 1,          # log2 feature map reduction when doubling the resolution.
@@ -863,7 +863,7 @@ def G_synthesis_stylegan2_3d_192(
 def D_stylegan2_3d_192(
     images_in,                          # First input: Images [minibatch, channel, height, width].
     labels_in,                          # Second input: Labels [minibatch, label_size].
-    num_channels        = 1,            # Number of input color channels. Overridden based on dataset.
+    num_channels        = 2,            # Number of input color channels. Overridden based on dataset.
     resolution          = 128,         # Input resolution. Overridden based on dataset.
     label_size          = 0,            # Dimensionality of the labels, 0 if no labels. Overridden based on dataset.
     fmap_base           = 16 << 10,     # Overall multiplier for the number of feature maps.

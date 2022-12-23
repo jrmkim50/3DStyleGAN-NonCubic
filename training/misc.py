@@ -12,6 +12,7 @@ import numpy as np
 import PIL.Image
 import PIL.ImageFont
 import dnnlib
+import random
 
 #----------------------------------------------------------------------------
 # Convenience wrappers for pickle that are able to load data produced by
@@ -57,21 +58,19 @@ def create_image_grid(images, grid_size=None):
         grid[..., y : y + img_h, x : x + img_w] = images[idx]
     return grid
 
-def convert_to_pil_image(image, drange=[0,1]):
+def convert_to_pil_image(image, drange=[0,1], channel_idx=0):
     assert image.ndim == 2 or image.ndim == 3
     if image.ndim == 3:
-        if image.shape[0] == 1:
-            image = image[0] # grayscale CHW => HW
-        else:
-            image = image.transpose(1, 2, 0) # CHW -> HWC
-
+        image = image[channel_idx]
     image = adjust_dynamic_range(image, drange, [0,255])
     image = np.rint(image).clip(0, 255).astype(np.uint8)
     fmt = 'RGB' if image.ndim == 3 else 'L'
     return PIL.Image.fromarray(image, fmt)
 
 def save_image_grid(images, filename, drange=[0,1], grid_size=None):
-    convert_to_pil_image(create_image_grid(images, grid_size), drange).save(filename)
+    filename_base = filename.split(".")[0]
+    convert_to_pil_image(create_image_grid(images, grid_size), drange, 0).save(f"{filename_base}_ct.png")
+    convert_to_pil_image(create_image_grid(images, grid_size), drange, 1).save(f"{filename_base}_pet.png")
 
 def apply_mirror_augment(minibatch):
     mask = np.random.rand(minibatch.shape[0]) < 0.5
@@ -106,19 +105,12 @@ def create_3d_image_grid(images, grid_size=None):
 
     return grid
 
-def convert_3d_to_pil_image(image, drange=[0,1]):
+def convert_3d_to_pil_image(image, drange=[0,1], channel_idx=0):
     assert image.ndim == 4 or image.ndim == 5
     if image.ndim == 4:
-        if image.shape[0] == 1:
-            image = image[0] # grayscale CHWD => DHW
-            img_d = image.shape[ 0 ]
-            image = image[ int( img_d // 2 ), :, : ] 
-        else:
-            image = image.transpose(1, 2, 3, 0) # CDHW -> DHWC
-            img_d = image.shape[ 0 ]
-            image = image[ int( img_d // 2 ), :, :, : ]
-    # else:
-    #     image = image[ :, img_d//2, :, :, : ]
+        image = image[channel_idx] # grayscale CHWD => DHW
+        img_d = image.shape[ 0 ]
+        image = image[ int( img_d // 2 ), :, : ] 
 
     image = adjust_dynamic_range(image, drange, [0,255])
     image = np.rint(image).clip(0, 255).astype(np.uint8)
@@ -129,7 +121,9 @@ def convert_3d_to_pil_image(image, drange=[0,1]):
 
 def save_3d_image_grid(images, filename, drange=[0,1], grid_size=None):
     pil_image = create_3d_image_grid(images, grid_size)
-    convert_3d_to_pil_image( pil_image, drange).save(filename)
+    filename_base = filename.split(".")[0]
+    convert_3d_to_pil_image( pil_image, drange, 0).save(f"{filename_base}_ct.png")
+    convert_3d_to_pil_image( pil_image, drange, 1).save(f"{filename_base}_pet.png")
 
 
 
