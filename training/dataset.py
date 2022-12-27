@@ -32,7 +32,7 @@ class TFRecordDataset:
         shuffle_mb      = 4096,     # Shuffle data within specified window (megabytes), 0 = disable shuffling.
         prefetch_mb     = 2048,     # Amount of data to prefetch (megabytes), 0 = disable prefetching.
         buffer_mb       = 256,      # Read buffer size (megabytes).
-        num_threads     = 2,        # Number of concurrent threads.
+        num_threads     = 8,        # Number of concurrent threads.
         base_size = [ 5, 6, 7 ]     # Size of Base Layer
         ):       
 

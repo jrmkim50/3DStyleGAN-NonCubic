@@ -65,7 +65,7 @@ def generate_images(network_pkl, seeds, truncation_psi):
     w_avg = Gs.get_var('dlatent_avg') # [component]
 
     Gs_syn_kwargs = dnnlib.EasyDict()
-    Gs_syn_kwargs.output_transform = dict(func=tflib.convert_3d_images_to_uint8, nchwd_to_nhwdc=True)
+    Gs_syn_kwargs.output_transform = dict(func=tflib.convert_3d_images_to_real_range, nchwd_to_nhwdc=True)
     Gs_syn_kwargs.randomize_noise = True
     Gs_syn_kwargs.minibatch_size = 1
 
@@ -88,9 +88,11 @@ def generate_images(network_pkl, seeds, truncation_psi):
         # tflib.set_vars({var: rnd.randn(*var.shape.as_list()) for var in noise_vars}) # [height, width]
         # images = Gs.run(z, None, **Gs_kwargs) # [minibatch, height, width, channel]
 
-        img = nib.Nifti1Image( images[0, :, :, :, 0 ], np.eye(4))
+        ct_img = nib.Nifti1Image( images[0, :, :, :, 0 ] * 0.172, np.eye(4)) # multiply by 0.172 to get to CT range
+        pet_img = nib.Nifti1Image( images[0, :, :, :, 1 ], np.eye(4))
 
-        nib.save( img, dnnlib.make_run_dir_path('seed%04d.nii.gz' % seed) )
+        nib.save( ct_img, dnnlib.make_run_dir_path('seed%04d_ct.nii.gz' % seed) )
+        nib.save( pet_img, dnnlib.make_run_dir_path('seed%04d_pet.nii.gz' % seed) )
 
         PIL.Image.fromarray(images[0, images.shape[1]//2, :, :, 0 ], 'L').save(dnnlib.make_run_dir_path('seed%04d_x.png' % seed))
         PIL.Image.fromarray(images[0, :, images.shape[2]//2, :, 0 ], 'L').save(dnnlib.make_run_dir_path('seed%04d_y.png' % seed))

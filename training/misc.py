@@ -101,7 +101,8 @@ def create_3d_image_grid(images, grid_size=None):
         if images.ndim == 4:
             grid[..., y : y + img_d, x : x + img_h] = images[idx][ :, :, int(img_w//2) ]
         else:
-            grid[..., y : y + img_d, x : x + img_h] = images[idx][ 0, :, :, int(img_w//2) ]
+            grid[0, ..., y : y + img_d, x : x + img_h] = images[idx][ 0, :, :, int(img_w//2) ]
+            grid[1, ..., y : y + img_d, x : x + img_h] = images[idx][ 1, :, :, int(img_w//2) ]
 
     return grid
 
