@@ -25,6 +25,7 @@ _valid_configs = [
     'Stanford-Mice-CT-PET-BS-4',
     'Stanford-Mice-CT-PET-BS-4-FMAP-64',
     'Stanford-Mice-CT-PET-FMAP-64',
+    'Stanford-Mice-CT-PET-FMAP-64-2x-Repeats',
 ]
 
 #----------------------------------------------------------------------------
@@ -684,6 +685,61 @@ def run(dataset, data_dir, result_dir, config_id, num_gpus, total_kimg, gamma, m
             64:  sched.minibatch_gpu_dict[ 64 ] * num_gpus,
             128: sched.minibatch_gpu_dict[ 128 ] * num_gpus,
         }
+    elif config_id == 'Stanford-Mice-CT-PET-FMAP-64-2x-Repeats':
+        # do not run this config until i know whether fmap 64 was a good idea
+        train   = EasyDict(run_func_name='training.training_loop_3d.training_loop') # Options for training loop.
+
+        dataset_args = EasyDict(tfrecord_dir=dataset)
+        dataset_args.base_size = [ 2, 2, 5 ] 
+
+        G       = EasyDict(func_name='training.networks3d_stylegan2.G_main')
+        D       = EasyDict(func_name='training.networks3d_stylegan2.D_stylegan2_3d_curated_real')
+
+        G_loss  = EasyDict(func_name='training.loss.G_logistic_ns_pathreg')
+        D_loss  = EasyDict(func_name='training.loss.D_logistic_r2')
+
+        # Generator Params 
+        G.architecture = 'orig'
+        
+        # Mapping Network Params
+        G.latent_size = 96
+        G.dlatent_size = 96
+        G.mapping_fmaps = 96
+
+        # Synthesis Network Params
+        # G.resolution = 128
+        G.fmap_min = 64
+        G.fmap_max = 64
+        G.base_size = [ 2, 2, 5 ]
+
+        # Discriminator Params 
+        D.architecture = 'resnet'        
+        # D.resolution=128
+        D.fmap_min = 64
+        D.fmap_max = 64
+        D.base_size = [ 2, 2, 5 ]
+    
+        train.data_dir = data_dir
+        train.total_kimg = total_kimg
+        train.mirror_augment = mirror_augment
+        train.image_snapshot_ticks = 1
+        train.network_snapshot_ticks = 1
+        train.lazy_regularization = False 
+        
+        sched.G_lrate_base = sched.D_lrate_base = 0.002
+
+        sched.minibatch_gpu_base = 32
+        sched.minibatch_gpu_dict = {4: 32, 8: 32, 16: 16, 32: 8, 64: 4, 128: 2}
+
+        sched.minibatch_size_base = sched.minibatch_gpu_base * num_gpus
+        sched.minibatch_size_dict = {
+            8: sched.minibatch_gpu_dict[ 8 ] * num_gpus , 
+            16:  sched.minibatch_gpu_dict[ 16 ] * num_gpus, 
+            32:  sched.minibatch_gpu_dict[ 32 ] * num_gpus, 
+            64:  sched.minibatch_gpu_dict[ 64 ] * num_gpus,
+            128: sched.minibatch_gpu_dict[ 128 ] * num_gpus,
+        }
+        sched.num_repeats = 2
     else:
         print( "Unknown Config" )
         return
