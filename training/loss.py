@@ -151,7 +151,7 @@ def D_wgan_gp(G, D, opt, training_set, minibatch_size, reals, labels, wgan_lambd
     loss += epsilon_penalty * wgan_epsilon
 
     with tf.name_scope('GradientPenalty'):
-        mixing_factors = tf.random_uniform([minibatch_size, 1, 1, 1], 0.0, 1.0, dtype=fake_images_out.dtype)
+        mixing_factors = tf.random.uniform([minibatch_size, 1, 1, 1], 0.0, 1.0, dtype=fake_images_out.dtype)
         mixed_images_out = tflib.lerp(tf.cast(reals, fake_images_out.dtype), fake_images_out, mixing_factors)
         mixed_scores_out = D.get_output_for(mixed_images_out, labels, is_training=True)
         mixed_scores_out = autosummary('Loss/scores/mixed', mixed_scores_out)
