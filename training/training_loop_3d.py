@@ -24,7 +24,7 @@ import sys
 
 dtypeGlob=tf.float16
 
-GPU_START=4
+GPU_START=0
 
 
 #----------------------------------------------------------------------------
@@ -71,7 +71,8 @@ def training_schedule(
     D_lrate_dict            = {},       # Resolution-specific overrides.
     lrate_rampup_kimg       = 0,        # Duration of learning rate ramp-up.
     tick_kimg_base          = 1,        # Default interval of progress snapshots.
-    tick_kimg_dict          = {4:32, 8:32, 16:16, 32:16, 64:8, 128:12, 256:8, 512:6, 1024:4}): # Resolution-specific overrides.
+    tick_kimg_dict          = {4:32, 8:32, 16:16, 32:16, 64:8, 128:12, 256:8, 512:6, 1024:4}, # Resolution-specific overrides.
+    num_repeats = None): 
     
     # Initialize result dict.
     s = dnnlib.EasyDict()
@@ -313,6 +314,7 @@ def training_loop(
     print( "==========================================" )
     print( "Lazy Regularization" )
     print( lazy_regularization )
+    print( "Num repeats in sched_args", str('num_repeats' in sched_args) )
     print( "==========================================" )
 
     while cur_nimg < total_kimg * 1000:
@@ -337,7 +339,7 @@ def training_loop(
         for _repeat in range(minibatch_repeats):
             rounds = range(0, sched.minibatch_size, sched.minibatch_gpu * num_gpus)
             if 'num_repeats' in sched_args:
-                rounds = range(0, len(num_repeats))
+                rounds = list(range(0, sched_args.num_repeats))
 
             run_G_reg = (lazy_regularization and running_mb_counter % G_reg_interval == 0)
             run_D_reg = (lazy_regularization and running_mb_counter % D_reg_interval == 0)
