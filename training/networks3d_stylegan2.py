@@ -440,7 +440,10 @@ def G_synthesis_stylegan2_3d_curated_real(
     images_out = y
 
     assert images_out.dtype == tf.as_dtype(dtype)
-    return tf.identity(images_out, name='images_out')
+
+    # CHANGE 1/3/23: TANH output!
+
+    return tf.tanh(images_out, name='images_out')
 
 
 #----------------------------------------------------------------------------
