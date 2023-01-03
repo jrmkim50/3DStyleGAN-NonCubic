@@ -20,6 +20,8 @@ import sys
 
 import os 
 
+os.environ["CUDA_VISIBLE_DEVICES"] ="0,1"
+
 import pretrained_networks
 
 import nibabel as nib
@@ -80,6 +82,7 @@ def generate_images(network_pkl, seeds, truncation_psi):
         print('Generating image for seed %d (%d/%d) ...' % (seed, seed_idx, len(seeds)))
         rnd = np.random.RandomState(seed)
         z = rnd.randn(1, *Gs.input_shape[1:]) # [minibatch, component]
+        print("LATENT", z)
 
         w = Gs.components.mapping.run( z, None )
         w = w_avg + (w - w_avg) * truncation_psi # [minibatch, layer, component]
