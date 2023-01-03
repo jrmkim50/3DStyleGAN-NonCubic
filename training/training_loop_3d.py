@@ -314,6 +314,8 @@ def training_loop(
     print( "==========================================" )
     print( "Lazy Regularization" )
     print( lazy_regularization )
+    print( "Drange net" )
+    print( drange_net )
     print( "Num repeats in sched_args", str('num_repeats' in sched_args) )
     print( "==========================================" )
 
